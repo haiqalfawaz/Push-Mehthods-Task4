@@ -1,11 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "@/components/sidebar";
 import useUsers from "@/hooks/useUsers";
-import { BiSearch } from "react-icons/bi";
+import { BiSearch, BiArrowToRight, BiArrowToLeft } from "react-icons/bi";
 import { user } from "../../hooks/user.interface";
+import { Plus_Jakarta_Sans } from "next/font/google";
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: "200",
+});
 
 const Dashboard = () => {
-  const { data, loading, error } = useUsers();
+  const {
+    data,
+    loading,
+    error,
+    handleNextPage,
+    handlePrevPage,
+    currentPage,
+    formatDate,
+  } = useUsers(1, 10);
 
   return (
     <div className="flex min-h-screen w-screen">
@@ -32,7 +46,9 @@ const Dashboard = () => {
           </div>
 
           {/* Tables */}
-          <div className="w-full overflow-x-auto">
+          <div
+            className={`${plusJakartaSans.className} w-full overflow-x-auto`}
+          >
             <table className="min-w-full bg-white text-black rounded-lg">
               <thead>
                 <tr className="bg-gray-800 text-white">
@@ -44,13 +60,7 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {loading ? (
-                  <tr>
-                    <td colSpan={5} className="py-3 px-6 text-center">
-                      Loading...
-                    </td>
-                  </tr>
-                ) : error ? (
+                {error ? (
                   <tr>
                     <td
                       colSpan={5}
@@ -71,12 +81,29 @@ const Dashboard = () => {
                       </td>
                       <td className="py-3 px-6">{user.email}</td>
                       <td className="py-3 px-6">{user.gender}</td>
-                      <td className="py-3 px-6">{user.registered.date}</td>
+                      <td className="py-3 px-6">
+                        {formatDate(user.registered.date)}
+                      </td>
                     </tr>
                   ))
                 )}
               </tbody>
             </table>
+          </div>
+          <div className="flex justify-center items-center gap-5">
+            <button
+              className="text-3xl bg-duskLilac p-1 w-fit rounded-lg transition-all duration-300 hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[4px_4px_0px_white] active:translate-x-0 active:translate-y-0 active:shadow-none cursor-pointer active:duration-150"
+              onClick={handlePrevPage}
+            >
+              <BiArrowToLeft />
+            </button>
+            <p>{currentPage}</p>
+            <button
+              className="text-3xl bg-duskLilac p-1 w-fit rounded-lg transition-all duration-300 hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[4px_4px_0px_white] active:translate-x-0 active:translate-y-0 active:shadow-none cursor-pointer active:duration-150"
+              onClick={handleNextPage}
+            >
+              <BiArrowToRight />
+            </button>
           </div>
         </div>
       </div>
