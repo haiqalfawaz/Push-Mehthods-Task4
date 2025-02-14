@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { user } from "@/hooks/user.interface";
 import axios from "axios";
 
-const useUsers = (initialPage: number, results: number) => {
+const useUsers = (
+  initialPage: number,
+  results: number,
+  search: string,
+  selectedGender: string
+) => {
   const [data, setData] = useState<user[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -11,12 +16,28 @@ const useUsers = (initialPage: number, results: number) => {
   const getData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(
-        `/api/users?results=${results}&page=${currentPage}`
-      );
-      setData(res.data);
+      let url = `/api/users?results=${results}&page=${currentPage}`;
+
+      if (selectedGender) {
+        url = `api/users?results=${results}&page=${currentPage}&gender=${selectedGender}`;
+      }
+
+      const res = await axios.get(url);
+
+      let filteredData = res.data;
+
+      if (search) {
+        const lowercasedSearch = search.toLowerCase();
+        filteredData = filteredData.filter((user: user) =>
+          `${user.name.first} ${user.name.last}`
+            .toLowerCase()
+            .includes(lowercasedSearch)
+        );
+      }
+
+      setData(filteredData);
     } catch (error) {
-      setError("Failed to fetching data User");
+      setError("Failed to fetch data User");
     } finally {
       setLoading(false);
     }
@@ -40,7 +61,7 @@ const useUsers = (initialPage: number, results: number) => {
 
   useEffect(() => {
     getData();
-  }, [currentPage, results]);
+  }, [currentPage, results, search, selectedGender]);
 
   return {
     data,

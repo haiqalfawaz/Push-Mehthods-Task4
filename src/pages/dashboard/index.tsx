@@ -11,15 +11,24 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 const Dashboard = () => {
+  const [search, setSearch] = useState<string>("");
+  const [selectedGender, setSelectedGender] = useState<string>("");
   const {
     data,
-    loading,
     error,
     handleNextPage,
     handlePrevPage,
     currentPage,
     formatDate,
-  } = useUsers(1, 10);
+  } = useUsers(1, 10, search, selectedGender);
+
+  const handleGenderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedGender(e.target.value);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  };
 
   return (
     <div className="flex min-h-screen w-screen">
@@ -34,10 +43,16 @@ const Dashboard = () => {
                 type="text"
                 placeholder="Search"
                 className="border-b-2 border-white outline-none bg-twilightShadow"
+                onChange={handleSearchChange}
+                value={search}
               />
             </div>
             <div className="flex justify-center items-center gap-3">
-              <select className="bg-twilightShadow text-white border-b-2 border-white outline-none">
+              <select
+                className="bg-twilightShadow text-white border-b-2 border-white outline-none"
+                onChange={handleGenderChange}
+                value={selectedGender}
+              >
                 <option value="">All</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
@@ -90,6 +105,7 @@ const Dashboard = () => {
               </tbody>
             </table>
           </div>
+
           <div className="flex justify-center items-center gap-5">
             <button
               className="text-3xl bg-duskLilac p-1 w-fit rounded-lg transition-all duration-300 hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[4px_4px_0px_white] active:translate-x-0 active:translate-y-0 active:shadow-none cursor-pointer active:duration-150"
@@ -97,6 +113,7 @@ const Dashboard = () => {
             >
               <BiArrowToLeft />
             </button>
+
             <p>{currentPage}</p>
             <button
               className="text-3xl bg-duskLilac p-1 w-fit rounded-lg transition-all duration-300 hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[4px_4px_0px_white] active:translate-x-0 active:translate-y-0 active:shadow-none cursor-pointer active:duration-150"
