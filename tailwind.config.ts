@@ -9,8 +9,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        moonlitMist: "#DBD8E3",
+        duskLilac: "#5C5470",
+        midnightPlum: "#352F44",
+        twilightShadow: "#2A2438",
       },
     },
   },
