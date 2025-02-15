@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { user } from "@/hooks/user.interface";
 import axios from "axios";
 
